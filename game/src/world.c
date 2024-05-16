@@ -39,4 +39,5 @@ void AddBody(ncBody* body) {
 void DestroyBody(ncBody* body) {
 	assert(body);
 
+	if (body->prev) body->prev->next = body->next;
 }

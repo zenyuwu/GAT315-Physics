@@ -28,13 +28,13 @@ void InitEditor()
     ncEditorData.EditorBoxActive = true;
     ncEditorData.MassMinValue = 2.0f;
     ncEditorData.MassMaxValue = 0.1f;
-    ncEditorData.GravitationValue = 0.0f;
+    ncEditorData.GravitationValue = 3000.0f;
     ncEditorData.BodyTypeEditMode = false;
     ncEditorData.BodyTypeActive = 0;
     ncEditorData.DampingValue = 0.0f;
     ncEditorData.GravityScaleValue = 0.0f;
 
-    editorRect = (Rectangle){ ncEditorData.anchor01.x + 0, ncEditorData.BodyTypeActive + 0, 304, 616 };
+    editorRect = (Rectangle){ ncEditorData.anchor01.x + 0, ncEditorData.anchor01.y + 0, 304, 616 };
 
     Image image = LoadImage("resources/reticle.png");
     cursorTexture = LoadTextureFromImage(image);
@@ -56,7 +56,7 @@ bool IsMouseHoveringRectanglee(Rectangle rect)
 
 void UpdateEditor(Vector2 position)
 {
-    //ncEditorIntersect = EditorBoxActive
+    ncEditorIntersect = EditorBoxActive;
     // Check for mouse interaction within the editor box
     if (IsMouseHoveringRectanglee(editorRect))
     {
@@ -77,11 +77,12 @@ void UpdateEditor(Vector2 position)
     ncEditorData.GravitationValue = BodyGravityValue;  // Assuming slider updates body gravity scale
     ncEditorData.DampingValue = BodyDampingValue;    // Assuming slider updates damping value
     ncEditorData.GravityScaleValue = WorldGravityValue; // Assuming slider updates world gravity scale
-    if (GuiDropdownBox((Rectangle) { 792, 192, 264, 24 }, "STATIC;KINEMATIC;DYNAMIC", & BodyTypeActive, BodyTypeEditMode))
-    {
-        ncEditorData.BodyTypeActive = BodyTypeActive;  // Update body type based on dropdown selection
-        ncEditorData.BodyTypeEditMode = !BodyTypeEditMode;  // Toggle edit mode on dropdown interaction
-    }
+    ncEditorData.BodyTypeActive = BodyTypeActive;
+    //if (GuiDropdownBox((Rectangle) { 792, 192, 264, 24 }, "BT_STATIC;BT_KINEMATIC;BT_DYNAMIC", & BodyTypeActive, BodyTypeEditMode))
+    //{
+    //    ncEditorData.BodyTypeActive = BodyTypeActive;  // Update body type based on dropdown selection
+    //    ncEditorData.BodyTypeEditMode = !BodyTypeEditMode;  // Toggle edit mode on dropdown interaction
+    //}
 }
 
 void DrawEditor(Vector2 position)
@@ -89,13 +90,13 @@ void DrawEditor(Vector2 position)
     if (ncEditorData.BodyTypeEditMode) GuiLock();
 
     if (ncEditorData.EditorBoxActive) {
-        ncEditorData.EditorBoxActive = !GuiWindowBox((Rectangle) { 768, 48, 312, 648 }, "EDITOR");
-        GuiSliderBar((Rectangle) { 880, 96, 176, 24 }, "Body Minimum Mass", NULL, & SliderMinimumValue, 0, 100);
+        ncEditorData.EditorBoxActive = !GuiWindowBox((Rectangle) { ncEditorData.anchor01.x + 0, ncEditorData.BodyTypeActive + 0, 304, 616 }, "EDITOR");
+        GuiSliderBar((Rectangle) { 880, 96, 176, 24 }, "Body Minimum Mass", NULL, & SliderMinimumValue, 0, 10);
         GuiSliderBar((Rectangle) { 880, 144, 176, 24 }, "Body Maximum Mass", NULL, & SliderMaximumValue, 0, 100);
         GuiSliderBar((Rectangle) { 888, 240, 168, 24 }, "Body Gravity Scale", NULL, & BodyGravityValue, 0, 100);
         GuiSliderBar((Rectangle) { 888, 288, 168, 24 }, "Body Damping", NULL, & BodyDampingValue, 0, 100);
         GuiSliderBar((Rectangle) { 888, 336, 168, 24 }, "World Gravity Scale", NULL, & WorldGravityValue, 0, 100);
-        if (GuiDropdownBox((Rectangle) { 792, 192, 264, 24 }, "STATIC;KINEMATIC;DYNAMIC", & BodyTypeActive, BodyTypeEditMode)) BodyTypeEditMode = !BodyTypeEditMode;
+        if (GuiDropdownBox((Rectangle) { 792, 192, 264, 24 }, "BT_STATIC;BT_KINEMATIC;BT_DYNAMIC", & BodyTypeActive, BodyTypeEditMode)) BodyTypeEditMode = !BodyTypeEditMode;
     }
     DrawTexture(cursorTexture, (int)position.x - cursorTexture.width / 2, (int)position.y - cursorTexture.height / 2, WHITE);
     //

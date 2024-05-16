@@ -68,7 +68,7 @@ void ApplySpringForce(ncSpring_t* springs) {
 
 		Vector2 ndirection = Vector2Normalize(direction);
 
-		ApplyForce(spring->body1, Vector2Scale(ndirection, force), FM_FORCE);
-		ApplyForce(spring->body2, Vector2Scale(Vector2Negate(ndirection), force), FM_FORCE);
+		ApplyForce(spring->body2, Vector2Scale(ndirection, force), FM_FORCE);
+		ApplyForce(spring->body1, Vector2Scale(Vector2Negate(ndirection), force), FM_FORCE);
 	}
 }

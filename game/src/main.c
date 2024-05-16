@@ -28,7 +28,7 @@ int main(void)
 	SetTargetFPS(60);
 
 	//init world
-	ncGravity = (Vector2){ 0,-1 };
+	ncGravity = (Vector2){ 0,0 }; //not sure if this is right
 
 	//game loop
 	while (!WindowShouldClose())
@@ -57,7 +57,7 @@ int main(void)
 			//try w zero damping
 			body->damping = 2.5f;
 			//try w zero?
-			body->gravityScale = 10;
+			body->gravityScale = ncEditorData.GravitationValue;
 			//ApplyForce(body, (Vector2){GetRandomFloatValue(-300, 300), GetRandomFloatValue(-300, 300)}, FM_VELOCITY);
 
 			AddBody(body);
@@ -122,7 +122,6 @@ int main(void)
 		//render
 		BeginDrawing();
 		ClearBackground(BLACK);
-
 
 		//stats
 		DrawText(TextFormat("FPS: %.2f (ms %.2f)", fps, 1000/fps), 10, 10, 20, LIME);
