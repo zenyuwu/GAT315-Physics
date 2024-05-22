@@ -20,6 +20,10 @@ int main(void)
 {
 	ncBody* selectedBody = NULL;
 	ncBody* connectBody = NULL;
+	ncContact_t* contacts = NULL;
+
+	//while(
+	//Step(body, fixedTimestep);
 
 	int screenWidth = 1200;
 	int screenHeight = 800;
@@ -28,15 +32,15 @@ int main(void)
 	SetTargetFPS(60);
 
 	//init world
-	ncGravity = (Vector2){ 0,0 }; //not sure if this is right
+	ncGravity = (Vector2){ 0,-50 }; //not sure if this is right
+
+	//time :((
+	float fixedTimestep = 1.0f / 50;
+	float timeAccumulator = 0;
 
 	//game loop
 	while (!WindowShouldClose())
 	{
-		//update
-		float dt = GetFrameTime();
-		float fps = (float)GetFPS();
-
 		Vector2 position = GetMousePosition();
 		ncScreenZoom += GetMouseWheelMove() * 0.2f;
 		ncScreenZoom = Clamp(ncScreenZoom, 0.1f, 10);
@@ -59,9 +63,10 @@ int main(void)
 			//try w zero?
 			body->gravityScale = ncEditorData.GravitationValue;
 			//ApplyForce(body, (Vector2){GetRandomFloatValue(-300, 300), GetRandomFloatValue(-300, 300)}, FM_VELOCITY);
+			body->restitution = 0.3f;
 
 			AddBody(body);
-			InitBody(body, dt);
+			//InitBody(body, dt);
 		}
 
 		//maple's rick click
@@ -106,25 +111,34 @@ int main(void)
 		//	ApplyForce(body, (Vector2) { GetRandomFloatValue(100, 1000), GetRandomFloatValue(-500, -100) }, FM_VELOCITY);
 		//}
 
-		//apply force
-		ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
-		ApplySpringForce(ncSprings);
+		//update
+		float dt = GetFrameTime();
+		float fps = (float)GetFPS();
+		timeAccumulator += dt;
+		while (timeAccumulator >= fixedTimestep) {
+			timeAccumulator -= fixedTimestep;
+			//apply force
+			ApplyGravitation(ncBodies, ncEditorData.GravitationValue);
+			ApplySpringForce(ncSprings);
 
-		//update bodies
-		for (ncBody* body = ncBodies; body; body = body->next) { //body can also be body != NULL
-			Step(body, dt);
+			//update bodies
+			for (ncBody* body = ncBodies; body; body = body->next) { //body can also be body != NULL
+				Step(body, fixedTimestep);
+			}
+
+			//collision
+			ncContact_t* contacts = NULL;
+			//DestroyAllContacts(contacts);
+			CreateContacts(ncBodies, &contacts);
+			SeparateContacts(contacts);
+			ResolveContacts(contacts);
 		}
-
-		//collision
-		ncContact_t* contacts = NULL;
-		CreateContacts(ncBodies, &contacts);
-
 		//render
 		BeginDrawing();
 		ClearBackground(BLACK);
 
 		//stats
-		DrawText(TextFormat("FPS: %.2f (ms %.2f)", fps, 1000/fps), 10, 10, 20, LIME);
+		DrawText(TextFormat("FPS: %.2f (ms %.2f)", fps, 1000 / fps), 10, 10, 20, LIME);
 		DrawText(TextFormat("FRAME: %.4f", dt), 10, 30, 20, LIME);
 
 		//DrawCircle((int)position.x, (int)position.y, 20, YELLOW);

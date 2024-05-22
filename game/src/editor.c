@@ -97,6 +97,7 @@ void DrawEditor(Vector2 position)
         GuiSliderBar((Rectangle) { 888, 288, 168, 24 }, "Body Damping", NULL, & BodyDampingValue, 0, 100);
         GuiSliderBar((Rectangle) { 888, 336, 168, 24 }, "World Gravity Scale", NULL, & WorldGravityValue, 0, 100);
         if (GuiDropdownBox((Rectangle) { 792, 192, 264, 24 }, "BT_STATIC;BT_KINEMATIC;BT_DYNAMIC", & BodyTypeActive, BodyTypeEditMode)) BodyTypeEditMode = !BodyTypeEditMode;
+        
     }
     DrawTexture(cursorTexture, (int)position.x - cursorTexture.width / 2, (int)position.y - cursorTexture.height / 2, WHITE);
     //
